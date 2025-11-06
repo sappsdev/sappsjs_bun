@@ -1,10 +1,10 @@
 import { respond, respondPaginated, respondStream } from "sappsjs";
 import type { PaginationOptions, RouteHandler } from "sappsjs/types";
-import { type UserFormData, type UserRequest } from "@/types/user-types";
+import { type UserFormData, type UserRegister } from "@/types/user-types";
 import * as UserService from "@/services/user-service";
 import { qrStreams } from "@/states/qr-state";
 
-export const postUser: RouteHandler<{ validJson: UserRequest }>  = async (req) => {
+export const postUser: RouteHandler<{ validJson: UserRegister }>  = async (req) => {
 	return respond(async () => {
 		const user = await UserService.createUser(req.validJson);
 		const { password, ...userWithoutPassword } = user;

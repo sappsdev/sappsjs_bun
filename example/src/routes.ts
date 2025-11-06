@@ -5,7 +5,7 @@ import { LoginRequestRules } from "@/types/auth-types";
 import { getMe, postLogin } from "@/handlers/auth-handler";
 import * as UserHandler from "@/handlers/user-handler";
 import { getWelcome } from "@/handlers/i18n-handler";
-import { UserFormRules, UserRequestRules } from "@/types/user-types";
+import { UserFormRules, UserRegisterRules } from "@/types/user-types";
 import { jwtRoles } from "@/middleware/jwt-roles";
 
 export const routes: Routes = {
@@ -16,7 +16,7 @@ export const routes: Routes = {
 		GET: [[jwtRoles(["admin", "user"])], getMe],
 	},
 	"/users": {
-		POST: [[validateJson(UserRequestRules)], UserHandler.postUser],
+		POST: [[validateJson(UserRegisterRules)], UserHandler.postUser],
 	},
 	"/users/uploads": {
 		POST: [[validateFormData(UserFormRules)], UserHandler.uploadFiles],
@@ -28,7 +28,7 @@ export const routes: Routes = {
 		GET: [[], UserHandler.streamUserUpdates],
 	},
   "/users/:id": {
-    PUT: [[validateJson(UserRequestRules), jwtRoles(["admin"])], UserHandler.postUser],
+    PUT: [[validateJson(UserRegisterRules), jwtRoles(["admin"])], UserHandler.postUser],
     DELETE: [[], UserHandler.deleteUser],
   },
 	"/health": {

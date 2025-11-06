@@ -57,7 +57,6 @@ const app = new SappsJS({
 		}
 	},
 	static: {
-		// SPA con fallback - sirve index.html para todas las rutas no encontradas
 		'/': {
 			path: 'web',
 			fallback: 'index.html',
@@ -65,14 +64,12 @@ const app = new SappsJS({
 			maxAge: 3600
 		},
 
-		// Archivos públicos sin autenticación
 		'/public': {
 			path: 'public',
 			maxAge: 86400,
 			immutable: true
 		},
 
-		// Archivos privados con middleware de autenticación
 		'/private': [
 			[jwtMiddleware],
 			{
@@ -81,7 +78,6 @@ const app = new SappsJS({
 			}
 		],
 
-		// Documentos que requieren token específico
 		'/docs': [
 			[validateToken],
 			{

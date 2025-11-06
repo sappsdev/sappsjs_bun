@@ -22,3 +22,5 @@ export const UserTable = defineTable({
 
 export type User = InferTable<typeof UserTable>;
 export type UserWithSessions = WithRelations<User, { sessions: Session[] }>;
+export type UserCreateData = Omit<User, "id" | "balance" | "image" | "created_at" | "updated_at">;
+export type UserUpdateData = Pick<User, "name" | "email">;

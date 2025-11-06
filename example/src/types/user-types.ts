@@ -1,7 +1,7 @@
 import type { User } from "@/entities/user";
 import type { FormDataRules, InferFormData, InferJson, JsonRules } from "sappsjs/types";
 
-export const UserRequestRules = {
+export const UserRegisterRules = {
 	name: [{ rule: "required", message: "Name required" }],
 	email: [
 		{ rule: "required", message: "Email required" },
@@ -11,9 +11,7 @@ export const UserRequestRules = {
 	image: [],
 } as const satisfies JsonRules;
 
-export type UserRequest = InferJson<typeof UserRequestRules>;
-export type UserCreateData = Omit<User, "id" | "role" | "image" | "balance" | "created_at" | "updated_at">;
-export type UserUpdateData = Omit<User, "id" | "role" | "balance" | "password" | "created_at" | "updated_at">;
+export type UserRegister = InferJson<typeof UserRegisterRules>;
 
 export const UserFormRules = {
 	name: [{ rule: "required", message: "Name required" }],

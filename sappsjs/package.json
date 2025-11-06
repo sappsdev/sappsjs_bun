@@ -1,6 +1,11 @@
 {
 	"name": "sappsjs",
-	"version": "1.1.10",
+	"version": "1.1.11",
+	"homepage": "https://ui.sappsdev.com",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sappsdev/sappsjs_bun.git"
+	},
 	"author": {
 		"name": "SappsDev",
 		"email": "info@sappsdev.com"
@@ -9,15 +14,16 @@
 	"module": "./dist/index.js",
 	"scripts": {
 		"dist": "bun src/build.ts",
-		"release": "bun run dist && bun publish"
+		"release": "bun run dist && bun publish",
+		"format": "prettier --write ."
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.3",
-		"@types/bun": "latest"
+		"@types/bun": "latest",
+		"prettier": "^3.6.2"
 	},
 	"peerDependencies": {
-		"typescript": "^5",
-		"@biomejs/biome": "2.3.3"
+		"prettier": "^3.6.2",
+		"typescript": "^5"
 	},
 	"bin": {
 		"sappsjs": "./dist/cli/index.js"

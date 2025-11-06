@@ -1,6 +1,6 @@
 import type { Col, ColumnConfig, ColumnType, EnumConfig, ForeignKeyConfig } from './types';
 
-class ColumnBuilder<T extends Col = Col> {
+export class ColumnBuilder<T extends Col = Col> {
 	private config: T;
 
 	constructor(config: T) {
@@ -71,6 +71,7 @@ export const integer = () => new ColumnBuilder(createCol('INTEGER'));
 export const decimal = () => new ColumnBuilder(createCol('DECIMAL'));
 export const boolean = () => new ColumnBuilder(createCol('BOOLEAN'));
 export const timestamp = () => new ColumnBuilder(createCol('TIMESTAMP'));
+export const date = () => new ColumnBuilder(createCol('DATE'));
 export const json = () => new ColumnBuilder(createCol('JSON'));
 export const jsonb = () => new ColumnBuilder(createCol('JSONB'));
 export const money = () => new ColumnBuilder(createCol('MONEY'));
@@ -85,5 +86,3 @@ export const enums = <const T extends readonly string[]>(...values: T) => {
 };
 
 export const column = <T extends ColumnConfig | ForeignKeyConfig>(config: T): T => config;
-
-export type ExtractConfig<T> = T extends ColumnBuilder<infer C> ? C : T;

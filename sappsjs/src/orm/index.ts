@@ -1,6 +1,7 @@
 import {
 	boolean,
 	column,
+	date,
 	decimal,
 	enums,
 	integer,
@@ -25,6 +26,7 @@ export {
 	belongsTo,
 	boolean,
 	column,
+	date,
 	defineTable,
 	hasMany,
 	index,

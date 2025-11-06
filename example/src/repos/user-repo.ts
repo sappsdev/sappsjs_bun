@@ -1,7 +1,6 @@
-import { UserTable, type User, type UserWithSessions } from "@/entities/user";
+import { UserTable, type User, type UserCreateData, type UserUpdateData, type UserWithSessions } from "@/entities/user";
 import { query, transaction, transactionWithSavepoints } from "sappsjs/orm";
 import type { PaginatedResponse, PaginationOptions } from "sappsjs/types";
-import type { UserCreateData, UserUpdateData } from "@/types/user-types";
 
 export async function insertUser(data: UserCreateData): Promise<User> {
 	return await query(UserTable).insert(data);

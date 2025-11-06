@@ -1,12 +1,14 @@
 import { AppError } from "sappsjs";
 
-import type { User, UserWithSessions } from "@/entities/users";
+
 import type { PaginationOptions } from "sappsjs/types";
-import type { UserRequest, UserUpdateData } from "@/types/user-types";
+
 
 import * as UserRepo from "@/repos/user-repo";
+import type { User, UserWithSessions } from "@/entities/user";
+import type { UserRegister } from "@/types/user-types";
 
-export async function createUser(body: UserRequest): Promise<User> {
+export async function createUser(body: UserRegister): Promise<User> {
 	const existingUser = await UserRepo.findUserByEmail(body.email);
 	if (existingUser) {
 		throw new AppError("CONFLICT", "Email already exists");
@@ -17,7 +19,8 @@ export async function createUser(body: UserRequest): Promise<User> {
 	const user = {
 		name: body.name,
 		email: body.email,
-		password: hashPassword
+		password: hashPassword,
+		role: "user" as const
 	};
 
 	return await UserRepo.insertUser(user);
@@ -51,7 +54,7 @@ export async function getUserByIdWithSessions(id: string): Promise<UserWithSessi
 	return user;
 }
 
-export async function updateUser(id: string, body: UserRequest): Promise<User> {
+export async function updateUser(id: string, body: UserRegister): Promise<User> {
 	const existingUser = await UserRepo.findUserById(id);
 	if (!existingUser) {
 		throw new AppError("NOT_FOUND", "User not found");
@@ -64,10 +67,9 @@ export async function updateUser(id: string, body: UserRequest): Promise<User> {
 		}
 	}
 
-	const user : UserUpdateData = {
+	const user = {
 		name: body.name,
 		email: body.email,
-		image: "sss",
 	};
 
 	const updated = await UserRepo.updateUser(id, user);

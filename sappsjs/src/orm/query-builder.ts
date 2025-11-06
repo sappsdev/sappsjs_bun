@@ -6,31 +6,10 @@ import type {
 	WhereCondition,
 	WhereOperator,
 	TableConfig,
-	InferTable
+  ExtractTableType,
+  ExtractRelations,
+  WithLoadedRelations
 } from './types';
-
-type ExtractTableType<T> = T extends TableConfig ? InferTable<T> : T;
-
-type ExtractRelations<T> = T extends TableConfig
-	? T['relations'] extends Record<string, any>
-		? keyof T['relations']
-		: never
-	: string;
-
-type WithLoadedRelations<
-	TTable extends TableConfig | any,
-	TLoaded extends string = never
-> = TTable extends TableConfig
-	? InferTable<TTable> & {
-			[K in TLoaded]: K extends keyof TTable['relations']
-				? TTable['relations'][K] extends { type: 'one-to-many' }
-					? any[]
-					: TTable['relations'][K] extends { type: 'many-to-one' }
-						? any | null
-						: any | null
-				: never;
-		}
-	: ExtractTableType<TTable>;
 
 export class QueryBuilder<TTable extends TableConfig | any = any, TLoaded extends string = never> {
 	private table: string;
@@ -120,6 +99,62 @@ export class QueryBuilder<TTable extends TableConfig | any = any, TLoaded extend
 			field: field as string,
 			operator,
 			value,
+			connector: 'OR'
+		});
+		return this;
+	}
+
+	whereBetween<K extends keyof ExtractTableType<TTable>>(
+		field: K,
+		start: any,
+		end: any
+	): QueryBuilder<TTable, TLoaded> {
+		this.whereClauses.push({
+			field: field as string,
+			operator: 'BETWEEN',
+			value: [start, end],
+			connector: 'AND'
+		});
+		return this;
+	}
+
+	orWhereBetween<K extends keyof ExtractTableType<TTable>>(
+		field: K,
+		start: any,
+		end: any
+	): QueryBuilder<TTable, TLoaded> {
+		this.whereClauses.push({
+			field: field as string,
+			operator: 'BETWEEN',
+			value: [start, end],
+			connector: 'OR'
+		});
+		return this;
+	}
+
+	whereNotBetween<K extends keyof ExtractTableType<TTable>>(
+		field: K,
+		start: any,
+		end: any
+	): QueryBuilder<TTable, TLoaded> {
+		this.whereClauses.push({
+			field: field as string,
+			operator: 'NOT BETWEEN',
+			value: [start, end],
+			connector: 'AND'
+		});
+		return this;
+	}
+
+	orWhereNotBetween<K extends keyof ExtractTableType<TTable>>(
+		field: K,
+		start: any,
+		end: any
+	): QueryBuilder<TTable, TLoaded> {
+		this.whereClauses.push({
+			field: field as string,
+			operator: 'NOT BETWEEN',
+			value: [start, end],
 			connector: 'OR'
 		});
 		return this;
@@ -278,6 +313,11 @@ export class QueryBuilder<TTable extends TableConfig | any = any, TLoaded extend
 					parts.push(sql`${v}`);
 				});
 				parts.push(sql.unsafe(`)`));
+			} else if (clause.operator === 'BETWEEN' || clause.operator === 'NOT BETWEEN') {
+				parts.push(sql.unsafe(`${clause.field} ${clause.operator} `));
+				parts.push(sql`${clause.value[0]}`);
+				parts.push(sql.unsafe(` AND `));
+				parts.push(sql`${clause.value[1]}`);
 			} else {
 				parts.push(sql.unsafe(`${clause.field} ${clause.operator} `));
 				parts.push(sql`${clause.value}`);

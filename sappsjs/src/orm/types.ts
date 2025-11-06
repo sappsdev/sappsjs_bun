@@ -1,3 +1,5 @@
+import type { ColumnBuilder } from "./column-types";
+
 export type ColumnType =
 	| 'SERIAL'
 	| 'VARCHAR'
@@ -5,6 +7,7 @@ export type ColumnType =
 	| 'INTEGER'
 	| 'BOOLEAN'
 	| 'TIMESTAMP'
+	| 'DATE'
 	| 'DECIMAL'
 	| 'JSON'
 	| 'JSONB'
@@ -58,7 +61,7 @@ export type IsSnakeCase<T extends string> = T extends ''
 			: false;
 
 type SnakeCaseError<T extends string> =
-	`⚠ Column name "${T}" must be in snake_case (e.g., "user_id" instead of "userId")`;
+	`⚠️ Column name "${T}" must be in snake_case (e.g., "user_id" instead of "userId")`;
 
 export type ValidateSnakeCase<T extends Record<string, any>> = {
 	[K in keyof T]: K extends string
@@ -92,7 +95,7 @@ type InferColumnType<T> = T extends { type: 'SERIAL' }
 			? number
 			: T extends { type: 'BOOLEAN' }
 				? boolean
-				: T extends { type: 'TIMESTAMP' }
+				: T extends { type: 'TIMESTAMP' | 'DATE' }
 					? Date
 					: T extends { type: 'DECIMAL' }
 						? number
@@ -142,7 +145,9 @@ export type WhereOperator =
 	| 'LIKE'
 	| 'ILIKE'
 	| 'IN'
-	| 'NOT IN';
+	| 'NOT IN'
+	| 'BETWEEN'
+	| 'NOT BETWEEN';
 
 export interface WhereCondition {
 	field: string;
@@ -159,3 +164,26 @@ export interface Relation {
 	type: 'hasMany' | 'hasOne' | 'belongsTo';
 	orderBy?: string;
 }
+
+export type ExtractTableType<T> = T extends TableConfig ? InferTable<T> : T;
+
+export type ExtractRelations<T> = T extends TableConfig
+	? T['relations'] extends Record<string, any>
+		? keyof T['relations']
+		: never
+	: string;
+
+export type WithLoadedRelations<
+	TTable extends TableConfig | any,
+	TLoaded extends string = never
+> = TTable extends TableConfig
+	? InferTable<TTable> & {
+			[K in TLoaded]: K extends keyof TTable['relations']
+				? TTable['relations'][K] extends { type: 'one-to-many' }
+					? any[]
+					: TTable['relations'][K] extends { type: 'many-to-one' }
+						? any | null
+						: any | null
+				: never;
+		}
+	: ExtractTableType<TTable>;

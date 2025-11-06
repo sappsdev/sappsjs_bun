@@ -124,3 +124,23 @@ const users = await query<User>(USERS_TABLE)
 	.limit(10)
 	.execute();
 ```
+
+```typescript
+const orders = await query(OrdersTable)
+	.whereBetween('created_at', '2024-01-01', '2024-12-31')
+	.execute();
+
+const records = await query(RecordsTable)
+	.where('status', 'active')
+	.orWhereBetween('updated_at', startDate, endDate)
+	.execute();
+
+const excluded = await query(ProductsTable).whereNotBetween('price', 10, 100).execute();
+
+const filtered = await query(TransactionsTable)
+	.where('user_id', userId)
+	.whereBetween('amount', 50, 500)
+	.whereBetween('created_at', startDate, endDate)
+	.orderBy('created_at', 'DESC')
+	.execute();
+```
