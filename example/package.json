@@ -1,0 +1,26 @@
+{
+	"name": "example",
+	"module": "src/index.ts",
+	"type": "module",
+	"private": true,
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"scripts": {
+		"dev": "bun --watch src/index.ts",
+		"db:generate": "bun sappsjs db:generate",
+		"db:migrate": "bun sappsjs db:migrate",
+		"db:reset": "bun sappsjs db:reset",
+		"db:rollback": "bun sappsjs db:rollback",
+		"db:seed": "bun sappsjs db:seed",
+		"db:seed:rollback": "bun sappsjs db:seed:rollback",
+		"db:seed:fresh": "bun sappsjs db:seed:fresh",
+		"db:seed:status": "bun sappsjs db:seed:status"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"sappsjs": "workspace:*"
+	}
+}

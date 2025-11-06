@@ -1,0 +1,41 @@
+{
+	"name": "sappsjs",
+	"version": "1.1.10",
+	"author": {
+		"name": "SappsDev",
+		"email": "info@sappsdev.com"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"scripts": {
+		"dist": "bun src/build.ts",
+		"release": "bun run dist && bun publish"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.3",
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5",
+		"@biomejs/biome": "2.3.3"
+	},
+	"bin": {
+		"sappsjs": "./dist/cli/index.js"
+	},
+	"exports": {
+		".": "./dist/index.js",
+		"./types": "./dist/types.js",
+		"./middleware": "./dist/middlewares/index.js",
+		"./orm": "./dist/orm/index.js",
+		"./error": "./dist/errors/index.js",
+		"./cron": "./dist/cron/index.js",
+		"./server": "./dist/server/index.js",
+		"./i18n": "./dist/translations/index.js"
+	},
+	"description": "Framework for Bun runtime",
+	"files": [
+		"dist"
+	],
+	"type": "module",
+	"types": "./dist/index.d.ts"
+}
