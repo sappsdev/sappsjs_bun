@@ -66,13 +66,13 @@ For detailed documentation, examples, and guides, visit our [official documentat
 
 ## 🤝 Contributing
 
-We welcome contributions from the community! Please read our [Contributing Guide](CONTRIBUTING.md) to learn about our development process and how to submit pull requests.
+We welcome contributions from the community! Please read our [Contributing Guide](https://github.com/sappsdev/sappsjs_bun/sappsjs/CONTRIBUTING.md) to learn about our development process and how to submit pull requests.
 
 ---
 
 ## 📄 License
 
-SappsJs is [MIT licensed](LICENSE).
+SappsJs is [MIT licensed](https://github.com/sappsdev/sappsjs_bun/sappsjs/LICENSE).
 
 ---
 
