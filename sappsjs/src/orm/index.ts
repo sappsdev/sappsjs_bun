@@ -8,18 +8,15 @@ import {
 	json,
 	jsonb,
 	money,
+	point,
 	serial,
 	text,
 	timestamp,
 	ulid
 } from './column-types';
-import {
-	query,
-	queryRaw,
-	Transaction,
-	transaction,
-	transactionWithSavepoints
-} from './query-builder';
+import { query, queryRaw } from './query-builder/helper';
+import { Transaction, transaction, transactionWithSavepoints } from './query-builder/transaction';
+
 import { belongsTo, defineTable, hasMany, index, manyToMany } from './table';
 
 export {
@@ -41,6 +38,7 @@ export {
 	serial,
 	text,
 	enums,
+	point,
 	timestamp,
 	transaction,
 	Transaction,

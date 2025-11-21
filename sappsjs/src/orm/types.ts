@@ -1,5 +1,3 @@
-import type { ColumnBuilder } from "./column-types";
-
 export type ColumnType =
 	| 'SERIAL'
 	| 'VARCHAR'
@@ -12,7 +10,8 @@ export type ColumnType =
 	| 'JSON'
 	| 'JSONB'
 	| 'MONEY'
-	| 'ENUM';
+	| 'ENUM'
+	| 'POINT';
 
 export type Col = ColumnConfig | ForeignKeyConfig;
 
@@ -24,6 +23,7 @@ export interface ColumnConfig {
 	default?: string | number | boolean;
 	onUpdate?: 'CURRENT_TIMESTAMP';
 	index?: boolean;
+	spatialIndex?: boolean;
 }
 
 export interface ForeignKeyConfig extends ColumnConfig {
@@ -39,10 +39,20 @@ export interface EnumConfig<T extends string = string> extends ColumnConfig {
 	default?: T;
 }
 
+export interface PointConfig extends ColumnConfig {
+	type: 'POINT';
+}
+
+export interface Point {
+	x: number;
+	y: number;
+}
+
 export interface IndexConfig {
 	columns: string[];
 	unique?: boolean;
 	name?: string;
+	type?: 'btree' | 'gist' | 'gin' | 'hash';
 }
 
 export interface RelationConfig {
@@ -103,9 +113,11 @@ type InferColumnType<T> = T extends { type: 'SERIAL' }
 							? Record<string, any>
 							: T extends { type: 'MONEY' }
 								? string
-								: T extends { type: 'ENUM'; values: readonly (infer E)[] }
-									? E
-									: never;
+								: T extends { type: 'POINT' }
+									? Point
+									: T extends { type: 'ENUM'; values: readonly (infer E)[] }
+										? E
+										: never;
 
 type InferNullable<T, Value> = T extends { nullable: true } ? Value | null : Value;
 
@@ -147,7 +159,15 @@ export type WhereOperator =
 	| 'IN'
 	| 'NOT IN'
 	| 'BETWEEN'
-	| 'NOT BETWEEN';
+	| 'NOT BETWEEN'
+	| '<@'
+	| '@>'
+	| '<<'
+	| '>>'
+	| '&<'
+	| '&>'
+	| '<->'
+	| '@@';
 
 export interface WhereCondition {
 	field: string;

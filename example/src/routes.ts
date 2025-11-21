@@ -32,7 +32,7 @@ export const routes: Routes = {
     DELETE: [[], UserHandler.deleteUser],
   },
 	"/health": {
-		GET: () => Response.json({ status: "ok" }),
+		GET: () => Response.json({ status: "ok!!!" }),
 	},
 	"/translation": {
 		GET: getWelcome,

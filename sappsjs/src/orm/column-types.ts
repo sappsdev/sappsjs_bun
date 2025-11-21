@@ -1,4 +1,11 @@
-import type { Col, ColumnConfig, ColumnType, EnumConfig, ForeignKeyConfig } from './types';
+import type {
+	Col,
+	ColumnConfig,
+	ColumnType,
+	EnumConfig,
+	ForeignKeyConfig,
+	PointConfig
+} from './types';
 
 export class ColumnBuilder<T extends Col = Col> {
 	private config: T;
@@ -48,6 +55,11 @@ export class ColumnBuilder<T extends Col = Col> {
 		return this as any;
 	}
 
+	spatialIndex(): ColumnBuilder<T & { spatialIndex: true }> {
+		(this.config as any).spatialIndex = true;
+		return this as any;
+	}
+
 	references(table: string, column: string = 'id'): ColumnBuilder<T & ForeignKeyConfig> {
 		(this.config as any).references = { table, column };
 		return this as any;
@@ -77,6 +89,8 @@ export const jsonb = () => new ColumnBuilder(createCol('JSONB'));
 export const money = () => new ColumnBuilder(createCol('MONEY'));
 export const ulid = () => new ColumnBuilder(createCol('TEXT'));
 export const serial = () => new ColumnBuilder(createCol('SERIAL'));
+
+export const point = () => new ColumnBuilder<PointConfig>(createCol('POINT') as any);
 
 export const enums = <const T extends readonly string[]>(...values: T) => {
 	return new ColumnBuilder<EnumConfig<T[number]>>({

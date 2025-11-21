@@ -143,4 +143,24 @@ const filtered = await query(TransactionsTable)
 	.whereBetween('created_at', startDate, endDate)
 	.orderBy('created_at', 'DESC')
 	.execute();
+
+const users = await query(usersTable).insertMany([
+	{ name: 'Alice', email: 'alice@example.com' },
+	{ name: 'Bob', email: 'bob@example.com' },
+	{ name: 'Charlie', email: 'charlie@example.com' }
+]);
+
+// Con puntos geométricos
+const locations = await query(locationsTable).insertMany([
+	{ name: 'Store A', location: { x: 10.5, y: 20.3 } },
+	{ name: 'Store B', location: { x: 15.2, y: 25.8 } }
+]);
+
+// Dentro de una transacción
+await transaction(async (tx) => {
+	const posts = await tx.query(postsTable).insertMany([
+		{ title: 'Post 1', content: 'Content 1' },
+		{ title: 'Post 2', content: 'Content 2' }
+	]);
+});
 ```
