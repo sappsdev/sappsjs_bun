@@ -253,4 +253,106 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+function switchCodeTab(idx, tabName) {
+  const card = document.getElementById('endpoint-' + idx);
+
+  // Update tab buttons
+  card.querySelectorAll('.code-tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.classList.add('active');
+
+  // Update tab content
+  card.querySelectorAll('.code-tab-content').forEach(content => {
+    content.classList.remove('active');
+  });
+  card.querySelector('#code-' + tabName + '-' + idx).classList.add('active');
+}
+
+function copyCode(idx, tabName) {
+  const codeElement = document.querySelector('#code-' + tabName + '-' + idx + ' code');
+  const copyBtn = event.target;
+
+  if (!codeElement) return;
+
+  const code = codeElement.textContent;
+  const originalText = copyBtn.textContent;
+
+  // Function to show success message
+  function showSuccess() {
+    copyBtn.textContent = '✅ Copied!';
+    copyBtn.classList.add('copied');
+    setTimeout(() => {
+      copyBtn.textContent = originalText;
+      copyBtn.classList.remove('copied');
+    }, 2000);
+  }
+
+  // Function to show error message
+  function showError(message) {
+    console.error('Failed to copy:', message);
+    copyBtn.textContent = '❌ Failed';
+    setTimeout(() => {
+      copyBtn.textContent = originalText;
+    }, 2000);
+  }
+
+  // Try modern clipboard API first
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code)
+      .then(showSuccess)
+      .catch(err => {
+        // If clipboard API fails, try fallback
+        if (fallbackCopyToClipboard(code)) {
+          showSuccess();
+        } else {
+          showError(err);
+        }
+      });
+  } else {
+    // Use fallback if clipboard API is not available
+    if (fallbackCopyToClipboard(code)) {
+      showSuccess();
+    } else {
+      showError('Clipboard API not available');
+    }
+  }
+}
+
+// Fallback copy method using temporary textarea
+function fallbackCopyToClipboard(text) {
+  try {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.top = '0';
+    textarea.style.left = '0';
+    textarea.style.width = '2em';
+    textarea.style.height = '2em';
+    textarea.style.padding = '0';
+    textarea.style.border = 'none';
+    textarea.style.outline = 'none';
+    textarea.style.boxShadow = 'none';
+    textarea.style.background = 'transparent';
+    textarea.style.opacity = '0';
+
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    let successful = false;
+    try {
+      successful = document.execCommand('copy');
+    } catch (err) {
+      console.error('execCommand failed:', err);
+    }
+
+    document.body.removeChild(textarea);
+    return successful;
+  } catch (err) {
+    console.error('Fallback copy failed:', err);
+    return false;
+  }
+}
 `;

@@ -1,7 +1,18 @@
-import type { RouteDoc } from "./types";
+import { generateCodeExamples } from './code-generator';
+import type { RouteDoc } from './types';
+
+function escapeHtml(text: string): string {
+	return text
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#039;');
+}
 
 export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
-	const defaultHeaders = "{}";
+	const codeExamples = generateCodeExamples(doc, '');
+	const defaultHeaders = '{}';
 	const hasFormData = !!doc.formDataSchema;
 
 	return `
@@ -9,8 +20,8 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
   <div class="route-header">
     <span class="method ${doc.method}">${doc.method}</span>
     <span class="path">${doc.path}</span>
-    ${doc.isStream ? '<span class="stream-badge">📡 SSE Stream</span>' : ""}
-    ${hasFormData ? '<span class="formdata-badge">📎 FormData</span>' : ""}
+    ${doc.isStream ? '<span class="stream-badge">📡 SSE Stream</span>' : ''}
+    ${hasFormData ? '<span class="formdata-badge">📎 FormData</span>' : ''}
   </div>
 
 	${
@@ -28,9 +39,9 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
 				? `
 
         <div class="section-title">Middlewares</div>
-        ${doc.middlewares.map((m) => `<span class="middleware-badge">${m}</span>`).join("")}
+        ${doc.middlewares.map((m) => `<span class="middleware-badge">${m}</span>`).join('')}
     `
-				: ""
+				: ''
 		}
 
   ${
@@ -41,11 +52,11 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
       ${doc.params
 				.map(
 					(p) =>
-						`<div class="param-item"><span class="param-name">:${p}</span><span class="param-type">string</span></div>`,
+						`<div class="param-item"><span class="param-name">:${p}</span><span class="param-type">string</span></div>`
 				)
-				.join("")}
+				.join('')}
   `
-			: ""
+			: ''
 	}
 	 ${
 			doc.queryParams
@@ -70,17 +81,17 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
                 <td><code>${param}</code></td>
                 <td><span class="type-badge">${info.type}</span></td>
                 <td>${info.optional ? '<span class="optional-badge">No</span>' : '<span class="required-badge">Yes</span>'}</td>
-                <td>${info.description || "-"}</td>
+                <td>${info.description || '-'}</td>
                 <td><code>${JSON.stringify(info.example)}</code></td>
               </tr>
-            `,
+            `
 							)
-							.join("")}
+							.join('')}
           </tbody>
         </table>
       </div>
   `
-				: ""
+				: ''
 		}
 		${
 			doc.bodySchema
@@ -105,16 +116,16 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
                 <td><code>${field}</code></td>
                 <td><span class="type-badge">${prop.type}</span></td>
                 <td>${doc.bodySchema!.required.includes(field) ? '<span class="required-badge">Yes</span>' : '<span class="optional-badge">No</span>'}</td>
-                <td>${prop.format ? `<span class="format-badge">${prop.format}</span>` : "-"}</td>
+                <td>${prop.format ? `<span class="format-badge">${prop.format}</span>` : '-'}</td>
                 <td><code>${JSON.stringify(prop.example)}</code></td>
               </tr>
-            `,
+            `
 							)
-							.join("")}
+							.join('')}
           </tbody>
         </table>
       </div>`
-				: ""
+				: ''
 		}
 		${
 			doc.formDataSchema
@@ -133,22 +144,23 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
           </thead>
           <tbody>
             ${Object.entries(doc.formDataSchema.properties)
-							.map(
-								([field, prop]) => {
-									let fileInfo = '-';
-									if (prop.isFile) {
-										const details = [];
-										if (prop.isMultiple) details.push('Multiple files');
-										else details.push('Single file');
-										if (prop.maxSize) details.push(`Max: ${(prop.maxSize / 1024 / 1024).toFixed(2)}MB`);
-										if (prop.minSize) details.push(`Min: ${(prop.minSize / 1024 / 1024).toFixed(2)}MB`);
-										if (prop.mimeTypes) details.push(`Types: ${prop.mimeTypes.join(', ')}`);
-										if (prop.maxFiles) details.push(`Max files: ${prop.maxFiles}`);
-										if (prop.minFiles) details.push(`Min files: ${prop.minFiles}`);
-										fileInfo = details.join('<br>');
-									}
+							.map(([field, prop]) => {
+								let fileInfo = '-';
+								if (prop.isFile) {
+									const details = [];
+									if (prop.isMultiple) details.push('Multiple files');
+									else details.push('Single file');
+									if (prop.maxSize)
+										details.push(`Max: ${(prop.maxSize / 1024 / 1024).toFixed(2)}MB`);
+									if (prop.minSize)
+										details.push(`Min: ${(prop.minSize / 1024 / 1024).toFixed(2)}MB`);
+									if (prop.mimeTypes) details.push(`Types: ${prop.mimeTypes.join(', ')}`);
+									if (prop.maxFiles) details.push(`Max files: ${prop.maxFiles}`);
+									if (prop.minFiles) details.push(`Min files: ${prop.minFiles}`);
+									fileInfo = details.join('<br>');
+								}
 
-									return `
+								return `
               <tr>
                 <td><code>${field}</code></td>
                 <td><span class="type-badge ${prop.isFile ? 'file' : ''}">${prop.isFile ? (prop.isMultiple ? 'file[]' : 'file') : prop.type}</span></td>
@@ -157,13 +169,12 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
                 <td><small>${prop.rules.join(', ')}</small></td>
               </tr>
             `;
-								}
-							)
-							.join("")}
+							})
+							.join('')}
           </tbody>
         </table>
       </div>`
-				: ""
+				: ''
 		}
 
     ${
@@ -175,11 +186,11 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
         <p>The connection will remain open and receive updates as they occur.</p>
       </div>
     `
-				: ""
+				: ''
 		}
     </div>
   `
-			: ""
+			: ''
 	}
 
   ${
@@ -203,7 +214,7 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
           <small class="helper-text">This token will be saved and reused across page refreshes</small>
         </div>
       `
-					: ""
+					: ''
 			}
 
       ${
@@ -215,20 +226,20 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
           <label>${p}:</label>
           <input type="text" name="param_${p}" placeholder="Enter ${p} value" required />
         </div>
-      `,
+      `
 							)
-							.join("")
-					: ""
+							.join('')
+					: ''
 			}
 
       <div class="optional-fields">
-        <label>Query Parameters ${doc.queryParams ? "(auto-detected)" : "(optional)"}:</label>
+        <label>Query Parameters ${doc.queryParams ? '(auto-detected)' : '(optional)'}:</label>
         <input type="text" name="query" placeholder="key1=value1&key2=value2" value="${
 					doc.queryParams
 						? Object.entries(doc.queryParams)
 								.map(([k, v]) => `${k}=${v.example}`)
-								.join("&")
-						: ""
+								.join('&')
+						: ''
 				}" />
       </div>
 
@@ -262,27 +273,35 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
            <button type="button" class="tab-btn active" onclick="switchTab(${idx}, 'query')">
              🔍 Query Parameters
            </button>
-           ${!hasFormData ? `<button type="button" class="tab-btn" onclick="switchTab(${idx}, 'headers')">
+           ${
+							!hasFormData
+								? `<button type="button" class="tab-btn" onclick="switchTab(${idx}, 'headers')">
              📋 Additional Headers
-           </button>` : ''}
+           </button>`
+								: ''
+						}
          </div>
 
          <div class="tab-content active" id="tab-query-${idx}">
-           <label>Query Parameters ${doc.isPaginated ? "(auto-detected)" : "(optional)"}:</label>
+           <label>Query Parameters ${doc.isPaginated ? '(auto-detected)' : '(optional)'}:</label>
            <input type="text" name="query" placeholder="key1=value1&key2=value2" value="${
 							doc.queryParams
 								? Object.entries(doc.queryParams)
 										.map(([k, v]) => `${k}=${v.example}`)
-										.join("&")
-								: ""
+										.join('&')
+								: ''
 						}" />
          </div>
 
-         ${!hasFormData ? `<div class="tab-content" id="tab-headers-${idx}">
+         ${
+						!hasFormData
+							? `<div class="tab-content" id="tab-headers-${idx}">
            <label>Additional Headers (optional, JSON):</label>
            <textarea name="headers" placeholder='${defaultHeaders}'>${defaultHeaders}</textarea>
-           <small class="helper-text">Add any extra headers here. ${doc.requiresBearer ? "Authorization header is automatically added from Bearer Token above." : ""}</small>
-         </div>` : ''}
+           <small class="helper-text">Add any extra headers here. ${doc.requiresBearer ? 'Authorization header is automatically added from Bearer Token above.' : ''}</small>
+         </div>`
+							: ''
+					}
        </div>
       ${
 				doc.requiresBearer
@@ -298,7 +317,7 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
           <small class="helper-text">This token will be saved and reused across page refreshes</small>
         </div>
       `
-					: ""
+					: ''
 			}
 
       ${
@@ -310,10 +329,10 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
           <label>${p}:</label>
           <input type="text" name="param_${p}" placeholder="Enter ${p} value" required />
         </div>
-      `,
+      `
 							)
-							.join("")
-					: ""
+							.join('')
+					: ''
 			}
 
       ${
@@ -353,14 +372,14 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
           </div>`;
 							}
 						})
-						.join("")}
+						.join('')}
         </div>
       `
-					: ["POST", "PUT", "PATCH"].includes(doc.method)
-					? `
+					: ['POST', 'PUT', 'PATCH'].includes(doc.method)
+						? `
         <div>
           <label>Request Body (JSON):</label>
-          <textarea name="body" placeholder='${doc.bodySchema ? JSON.stringify(doc.bodySchema.example, null, 2) : '{"key": "value"}'}'>${doc.bodySchema ? JSON.stringify(doc.bodySchema.example, null, 2) : ""}</textarea>
+          <textarea name="body" placeholder='${doc.bodySchema ? JSON.stringify(doc.bodySchema.example, null, 2) : '{"key": "value"}'}'>${doc.bodySchema ? JSON.stringify(doc.bodySchema.example, null, 2) : ''}</textarea>
           ${
 						doc.bodySchema
 							? `
@@ -368,11 +387,11 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
             📋 Fill Example Data
           </button>
           `
-							: ""
+							: ''
 					}
         </div>
       `
-					: ""
+						: ''
 			}
 
       <button type="submit">Send Request</button>
@@ -381,6 +400,51 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
   </div>
   `
 	}
+ <div class="code-examples-section">
+    <div class="section-title">📋 Code Examples</div>
+    <div class="code-tabs">
+      <div class="code-tabs-header">
+        <button type="button" class="code-tab-btn active" onclick="switchCodeTab(${idx}, 'svelte')">
+          🎯 Svelte (sappsui)
+        </button>
+        <button type="button" class="code-tab-btn" onclick="switchCodeTab(${idx}, 'fetch')">
+          🌐 Fetch API
+        </button>
+        <button type="button" class="code-tab-btn" onclick="switchCodeTab(${idx}, 'curl')">
+          💻 cURL
+        </button>
+      </div>
+      <div class="code-tabs-content">
+        <div class="code-tab-content active" id="code-svelte-${idx}">
+          <div class="code-header">
+            <span class="code-language">Svelte + sappsui</span>
+            <button type="button" class="copy-btn" onclick="copyCode(${idx}, 'svelte')">
+              📋 Copy
+            </button>
+          </div>
+          <pre><code>${escapeHtml(codeExamples.svelte)}</code></pre>
+        </div>
+        <div class="code-tab-content" id="code-fetch-${idx}">
+          <div class="code-header">
+            <span class="code-language">JavaScript Fetch</span>
+            <button type="button" class="copy-btn" onclick="copyCode(${idx}, 'fetch')">
+              📋 Copy
+            </button>
+          </div>
+          <pre><code>${escapeHtml(codeExamples.fetch)}</code></pre>
+        </div>
+        <div class="code-tab-content" id="code-curl-${idx}">
+          <div class="code-header">
+            <span class="code-language">cURL</span>
+            <button type="button" class="copy-btn" onclick="copyCode(${idx}, 'curl')">
+              📋 Copy
+            </button>
+          </div>
+          <pre><code>${escapeHtml(codeExamples.curl)}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <script>
   // Load saved bearer token on page load for endpoint ${idx}

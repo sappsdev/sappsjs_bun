@@ -768,4 +768,133 @@ button:active {
     transform: translateY(0);
   }
 }
+
+/* Code Examples Section */
+.code-examples-section {
+  margin-top: 24px;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.code-tabs {
+  margin-top: 16px;
+}
+
+.code-tabs-header {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 0;
+}
+
+.code-tab-btn {
+  background: transparent;
+  color: #64748b;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  margin: 0;
+  margin-bottom: -2px;
+  border-radius: 0;
+}
+
+.code-tab-btn:hover {
+  color: #3b82f6;
+  background: #f1f5f9;
+  box-shadow: none;
+}
+
+.code-tab-btn.active {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+  background: transparent;
+}
+
+.code-tabs-content {
+  background: #0f172a;
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+}
+
+.code-tab-content {
+  display: none;
+  animation: codeFadeIn 0.3s ease;
+}
+
+.code-tab-content.active {
+  display: block;
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: #1e293b;
+  border-bottom: 1px solid #334155;
+}
+
+.code-language {
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.copy-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  margin: 0;
+}
+
+.copy-btn:hover {
+  background: #2563eb;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.copy-btn.copied {
+  background: #10b981;
+}
+
+.code-tab-content pre {
+  margin: 0;
+  padding: 20px;
+  overflow-x: auto;
+  background: #0f172a;
+}
+
+.code-tab-content code {
+  color: #e2e8f0;
+  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+@keyframes codeFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 `;
