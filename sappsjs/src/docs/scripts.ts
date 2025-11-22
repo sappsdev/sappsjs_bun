@@ -2,6 +2,7 @@ export const docsScripts = `
 let currentEndpoint = null;
 let exampleData = {};
 let shikiHighlighter = null;
+let codeMirrorEditors = {};
 
 // Initialize Shiki
 async function initShiki() {
@@ -10,6 +11,48 @@ async function initShiki() {
     return codeToHtml;
   } catch (error) {
     console.error('Failed to load Shiki:', error);
+    return null;
+  }
+}
+
+// Initialize CodeMirror for a specific textarea
+async function initCodeMirror(textareaId) {
+  try {
+    // Load CodeMirror dependencies
+    const { EditorView, basicSetup } = await import('https://esm.sh/codemirror@6.0.1');
+    const { json } = await import('https://esm.sh/@codemirror/lang-json@6.0.1');
+    const { oneDark } = await import('https://esm.sh/@codemirror/theme-one-dark@6.1.2');
+
+    const textarea = document.getElementById(textareaId);
+    if (!textarea || codeMirrorEditors[textareaId]) return;
+
+    // Create CodeMirror editor
+    const editor = new EditorView({
+      doc: textarea.value,
+      extensions: [
+        basicSetup,
+        json(),
+        oneDark,
+        EditorView.updateListener.of((update) => {
+          if (update.docChanged) {
+            textarea.value = update.state.doc.toString();
+            // Trigger change event for form validation
+            textarea.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+        })
+      ],
+      parent: textarea.parentElement
+    });
+
+    // Hide the original textarea
+    textarea.style.display = 'none';
+
+    // Store editor reference
+    codeMirrorEditors[textareaId] = editor;
+
+    return editor;
+  } catch (error) {
+    console.error('Failed to initialize CodeMirror:', error);
     return null;
   }
 }
@@ -79,6 +122,13 @@ function showEndpoint(idx) {
 
   // Highlight code blocks when showing endpoint
   setTimeout(() => highlightAllCodeBlocks(), 100);
+
+  // Initialize CodeMirror for JSON body textarea if it exists
+  const bodyTextareaId = 'body-textarea-' + idx;
+  const bodyTextarea = document.getElementById(bodyTextareaId);
+  if (bodyTextarea && !codeMirrorEditors[bodyTextareaId]) {
+    setTimeout(() => initCodeMirror(bodyTextareaId), 150);
+  }
 }
 
 function switchTab(idx, tabName) {
@@ -103,10 +153,24 @@ function fillExampleData(idx) {
 
   if (examplePre) {
     const exampleJson = examplePre.textContent;
-    const bodyTextarea = card.querySelector('textarea[name="body"]');
+    const bodyTextareaId = 'body-textarea-' + idx;
+    const bodyTextarea = document.getElementById(bodyTextareaId);
 
     if (bodyTextarea) {
+      // Update textarea value
       bodyTextarea.value = exampleJson;
+
+      // Update CodeMirror editor if it exists
+      const editor = codeMirrorEditors[bodyTextareaId];
+      if (editor) {
+        editor.dispatch({
+          changes: {
+            from: 0,
+            to: editor.state.doc.length,
+            insert: exampleJson
+          }
+        });
+      }
     }
   }
 }

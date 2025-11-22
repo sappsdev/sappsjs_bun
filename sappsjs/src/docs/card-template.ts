@@ -377,9 +377,15 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
       `
 					: ['POST', 'PUT', 'PATCH'].includes(doc.method)
 						? `
-        <div>
+        <div class="json-editor-container">
           <label>Request Body (JSON):</label>
-          <textarea name="body" placeholder='${doc.bodySchema ? JSON.stringify(doc.bodySchema.example, null, 2) : '{"key": "value"}'}'>${doc.bodySchema ? JSON.stringify(doc.bodySchema.example, null, 2) : ''}</textarea>
+          <div class="codemirror-wrapper">
+            <textarea
+              id="body-textarea-${idx}"
+              name="body"
+              placeholder='${doc.bodySchema ? JSON.stringify(doc.bodySchema.example, null, 2) : '{"key": "value"}'}'
+            >${doc.bodySchema ? JSON.stringify(doc.bodySchema.example, null, 2) : ''}</textarea>
+          </div>
           ${
 						doc.bodySchema
 							? `
