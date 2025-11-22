@@ -422,7 +422,7 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
               📋 Copy
             </button>
           </div>
-          <pre><code>${escapeHtml(codeExamples.svelte)}</code></pre>
+          <div class="shiki-container" data-lang="svelte" data-code="${escapeHtml(codeExamples.svelte)}"></div>
         </div>
         <div class="code-tab-content" id="code-fetch-${idx}">
           <div class="code-header">
@@ -431,7 +431,7 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
               📋 Copy
             </button>
           </div>
-          <pre><code>${escapeHtml(codeExamples.fetch)}</code></pre>
+          <div class="shiki-container" data-lang="javascript" data-code="${escapeHtml(codeExamples.fetch)}"></div>
         </div>
         <div class="code-tab-content" id="code-curl-${idx}">
           <div class="code-header">
@@ -440,7 +440,7 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
               📋 Copy
             </button>
           </div>
-          <pre><code>${escapeHtml(codeExamples.curl)}</code></pre>
+          <div class="shiki-container" data-lang="bash" data-code="${escapeHtml(codeExamples.curl)}"></div>
         </div>
       </div>
     </div>

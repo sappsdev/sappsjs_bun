@@ -437,8 +437,8 @@ button:active {
 .optional-badge {
   display: inline-block;
   padding: 4px 10px;
-  background: #d1fae5;
-  color: #065f46;
+  background: #e0e7ff;
+  color: #3730a3;
   border-radius: 5px;
   font-size: 11px;
   font-weight: 700;
@@ -449,21 +449,13 @@ button:active {
 .format-badge {
   display: inline-block;
   padding: 4px 10px;
-  background: #f3e8ff;
-  color: #6b21a8;
+  background: #fef3c7;
+  color: #92400e;
   border-radius: 5px;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-}
-
-.example-json {
-  margin-top: 1rem;
-  background: #0f172a;
-  border-radius: 8px;
-  padding: 1.5rem;
-  border: 1px solid #1e293b;
 }
 
 .example-title {
@@ -817,7 +809,7 @@ button:active {
 }
 
 .code-tabs-content {
-  background: #0f172a;
+  background: #303446;
   border-radius: 0 0 10px 10px;
   overflow: hidden;
 }
@@ -836,12 +828,12 @@ button:active {
   justify-content: space-between;
   align-items: center;
   padding: 12px 20px;
-  background: #1e293b;
-  border-bottom: 1px solid #334155;
+  background: #292c3c;
+  border-bottom: 1px solid #414559;
 }
 
 .code-language {
-  color: #94a3b8;
+  color: #a5adcb;
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
@@ -870,15 +862,51 @@ button:active {
   background: #10b981;
 }
 
+/* Shiki container styles */
+.shiki-container {
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  background: #303446;
+}
+
+.shiki-container pre {
+  margin: 0 !important;
+  padding: 20px !important;
+  background: transparent !important;
+  overflow-x: auto;
+}
+
+.shiki-container code {
+  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  display: block;
+}
+
+/* Override any conflicting styles for highlighted code */
+.shiki-container.highlighted pre {
+  background: transparent !important;
+}
+
+.shiki-container.highlighted code {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+/* Fallback for non-highlighted code */
 .code-tab-content pre {
   margin: 0;
   padding: 20px;
   overflow-x: auto;
-  background: #0f172a;
+  background: #303446;
 }
 
 .code-tab-content code {
-  color: #e2e8f0;
+  color: #c6d0f5;
   font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
   font-size: 13px;
   line-height: 1.6;
@@ -896,5 +924,23 @@ button:active {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Shiki theme scrollbar */
+.shiki-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.shiki-container::-webkit-scrollbar-track {
+  background: #292c3c;
+}
+
+.shiki-container::-webkit-scrollbar-thumb {
+  background: #51576d;
+  border-radius: 4px;
+}
+
+.shiki-container::-webkit-scrollbar-thumb:hover {
+  background: #626880;
 }
 `;

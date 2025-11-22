@@ -1,6 +1,60 @@
 export const docsScripts = `
 let currentEndpoint = null;
 let exampleData = {};
+let shikiHighlighter = null;
+
+// Initialize Shiki
+async function initShiki() {
+  try {
+    const { codeToHtml } = await import('https://esm.sh/shiki@3.0.0');
+    return codeToHtml;
+  } catch (error) {
+    console.error('Failed to load Shiki:', error);
+    return null;
+  }
+}
+
+// Highlight all code blocks
+async function highlightAllCodeBlocks() {
+  if (!shikiHighlighter) {
+    shikiHighlighter = await initShiki();
+  }
+
+  if (!shikiHighlighter) {
+    console.warn('Shiki not available, falling back to plain text');
+    return;
+  }
+
+  const containers = document.querySelectorAll('.shiki-container:not(.highlighted)');
+
+  for (const container of containers) {
+    const code = container.getAttribute('data-code');
+    const lang = container.getAttribute('data-lang') || 'text';
+
+    if (code) {
+      try {
+        const decodedCode = decodeHtmlEntities(code);
+        const html = await shikiHighlighter(decodedCode, {
+          lang: lang,
+          theme: 'catppuccin-frappe'
+        });
+        container.innerHTML = html;
+        container.classList.add('highlighted');
+      } catch (error) {
+        console.error('Error highlighting code:', error);
+        // Fallback to plain text
+        container.innerHTML = '<pre><code>' + code + '</code></pre>';
+      }
+    }
+  }
+}
+
+// Decode HTML entities
+function decodeHtmlEntities(text) {
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = text;
+  return textarea.value;
+}
 
 function showEndpoint(idx) {
   // Ocultar ambos welcome screens
@@ -22,6 +76,9 @@ function showEndpoint(idx) {
 
   currentEndpoint = idx;
   document.querySelector('.main-content').scrollTop = 0;
+
+  // Highlight code blocks when showing endpoint
+  setTimeout(() => highlightAllCodeBlocks(), 100);
 }
 
 function switchTab(idx, tabName) {
@@ -244,14 +301,18 @@ async function sendRequest(e, idx, method, path, requiresBearer = false) {
   return false;
 }
 
-// Initialize bearer tokens on page load
+// Initialize bearer tokens and Shiki on page load
 document.addEventListener('DOMContentLoaded', function() {
+  // Load saved bearer token
   const savedToken = localStorage.getItem('bearer_token');
   if (savedToken) {
     document.querySelectorAll('input[name="bearer_token"]').forEach(input => {
       input.value = savedToken;
     });
   }
+
+  // Initialize Shiki and highlight visible code blocks
+  highlightAllCodeBlocks();
 });
 
 function switchCodeTab(idx, tabName) {
@@ -268,15 +329,32 @@ function switchCodeTab(idx, tabName) {
     content.classList.remove('active');
   });
   card.querySelector('#code-' + tabName + '-' + idx).classList.add('active');
+
+  // Highlight code blocks when switching tabs
+  setTimeout(() => highlightAllCodeBlocks(), 50);
 }
 
 function copyCode(idx, tabName) {
-  const codeElement = document.querySelector('#code-' + tabName + '-' + idx + ' code');
+  const tabContent = document.querySelector('#code-' + tabName + '-' + idx);
   const copyBtn = event.target;
 
-  if (!codeElement) return;
+  if (!tabContent) return;
 
-  const code = codeElement.textContent;
+  // Try to get code from shiki container first, fallback to pre > code
+  let code = '';
+  const shikiContainer = tabContent.querySelector('.shiki-container');
+  if (shikiContainer) {
+    // Get the original code from data attribute
+    code = decodeHtmlEntities(shikiContainer.getAttribute('data-code'));
+  } else {
+    const codeElement = tabContent.querySelector('pre code');
+    if (codeElement) {
+      code = codeElement.textContent;
+    }
+  }
+
+  if (!code) return;
+
   const originalText = copyBtn.textContent;
 
   // Function to show success message
