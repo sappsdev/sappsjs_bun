@@ -129,6 +129,13 @@ function showEndpoint(idx) {
   if (bodyTextarea && !codeMirrorEditors[bodyTextareaId]) {
     setTimeout(() => initCodeMirror(bodyTextareaId), 150);
   }
+
+  // Initialize CodeMirror for headers textarea if it exists
+  const headersTextareaId = 'headers-textarea-' + idx;
+  const headersTextarea = document.getElementById(headersTextareaId);
+  if (headersTextarea && !codeMirrorEditors[headersTextareaId]) {
+    setTimeout(() => initCodeMirror(headersTextareaId), 150);
+  }
 }
 
 function switchTab(idx, tabName) {

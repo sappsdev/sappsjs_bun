@@ -297,7 +297,7 @@ export function generateRouteCardTemplate(doc: RouteDoc, idx: number): string {
 						!hasFormData
 							? `<div class="tab-content" id="tab-headers-${idx}">
            <label>Additional Headers (optional, JSON):</label>
-           <textarea name="headers" placeholder='${defaultHeaders}'>${defaultHeaders}</textarea>
+           <textarea id="headers-textarea-${idx}" name="headers" placeholder='${defaultHeaders}'>${defaultHeaders}</textarea>
            <small class="helper-text">Add any extra headers here. ${doc.requiresBearer ? 'Authorization header is automatically added from Bearer Token above.' : ''}</small>
          </div>`
 							: ''

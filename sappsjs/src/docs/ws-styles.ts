@@ -1,32 +1,7 @@
 export const wsStyles = `
-/* WebSocket specific styles */
-.method.WS {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-  color: white;
-  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
-}
-
-.endpoint-method.WS {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-  color: white;
-  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
-}
-
-.ws-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border-radius: 16px;
-  padding: 40px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.02);
-  display: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.ws-card.active {
-  display: block;
-  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
+/* ============================================
+   WEBSOCKET HANDLERS
+   ============================================ */
 .ws-handlers {
   display: flex;
   flex-wrap: wrap;
@@ -53,6 +28,9 @@ export const wsStyles = `
   opacity: 0.6;
 }
 
+/* ============================================
+   WEBSOCKET CONNECTION
+   ============================================ */
 .ws-connection-section {
   display: flex;
   gap: 16px;
@@ -94,6 +72,9 @@ export const wsStyles = `
   transform: translateY(-2px);
 }
 
+/* ============================================
+   WEBSOCKET STATUS
+   ============================================ */
 .ws-status {
   display: inline-block;
 }
@@ -137,6 +118,9 @@ export const wsStyles = `
   }
 }
 
+/* ============================================
+   WEBSOCKET MESSAGES
+   ============================================ */
 .ws-message-section {
   margin: 28px 0;
 }
@@ -155,6 +139,7 @@ export const wsStyles = `
   font-size: 14px;
   transition: all 0.3s ease;
   background: white;
+  margin: 0;
 }
 
 .message-input-group input:focus {
@@ -178,6 +163,9 @@ export const wsStyles = `
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* ============================================
+   WEBSOCKET LOGS
+   ============================================ */
 .ws-logs-section {
   margin-top: 32px;
 }
@@ -277,17 +265,5 @@ export const wsStyles = `
   background: linear-gradient(135deg, #475569 0%, #334155 100%);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-/* WebSocket sidebar section */
-.sidebar-section-title {
-  padding: 16px 20px 8px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  border-top: 1px solid #334155;
-  margin-top: 8px;
 }
 `;

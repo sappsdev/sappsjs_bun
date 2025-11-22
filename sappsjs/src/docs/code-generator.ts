@@ -220,7 +220,7 @@ function generateFetchCode(doc: RouteDoc, baseUrl: string): string {
 	let queryParamsCode = '';
 	if (doc.queryParams) {
 		const params = Object.keys(doc.queryParams);
-		queryParamsCode = `\n// Query parameters\nconst queryParams = {\n  ${params.map((p) => `${p}: '${doc.queryParams![p].example}'`).join(',\n  ')}\n};\n\nconst queryString = new URLSearchParams(queryParams).toString();\nconst url = \`${url}?\${queryString}\`;\n`;
+		queryParamsCode = `\n// Query parameters\nconst queryParams = {\n  ${params.map((p) => `${p}: '${doc.queryParams![p]!.example}'`).join(',\n  ')}\n};\n\nconst queryString = new URLSearchParams(queryParams).toString();\nconst url = \`${url}?\${queryString}\`;\n`;
 	} else {
 		queryParamsCode = `const url = \`${url}\`;\n`;
 	}
